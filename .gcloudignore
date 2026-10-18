@@ -1,0 +1,6 @@
+# Arquivos que NÃO sobem no "gcloud run deploy --source ."
+.gcloudignore
+.git
+.gitignore
+node_modules/
+*.zip

@@ -1,0 +1,10 @@
+{
+  "name": "instacomp",
+  "version": "1.0.0",
+  "description": "InstaComp: um Instagram de mentira para publicar no Cloud Run (Semana da Computação UFJF)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "MIT"
+}
