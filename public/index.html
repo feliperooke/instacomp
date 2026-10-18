@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>InstaComp · Semana da Computação UFJF</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@900&family=Caveat:wght@600;700&family=IBM+Plex+Sans:wght@400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1F1D1A; --paper: #FBF8F1; --terra: #C15A33; --mut: #5E5A52; --faint: #7A746A;
+      --brand: linear-gradient(90deg, #C15A33 0%, #B8325A 50%, #2A4F9C 100%);
+      --app-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh; padding: 40px 16px 56px;
+      background: var(--paper) radial-gradient(rgba(31,29,26,.16) 1.4px, transparent 1.6px) 0 0 / 28px 28px;
+      color: var(--ink); font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    }
+    .page { max-width: 760px; margin: 0 auto; }
+
+    /* ---------- topo: o que está rodando ---------- */
+    .eyebrow { font: 600 clamp(24px, 4vw, 34px)/1.1 'Caveat', cursive; color: var(--terra); }
+    h1 { font: 900 clamp(52px, 11vw, 112px)/1 'Archivo', 'Arial Black', sans-serif; letter-spacing: -0.04em; margin: .1em 0 .2em; }
+    h1 span { background: linear-gradient(transparent 58%, rgba(224,122,85,.45) 58% 92%, transparent 92%); }
+    .sub { font-size: clamp(17px, 2.3vw, 22px); line-height: 1.45; color: var(--mut); max-width: 34em; }
+    .card {
+      margin-top: 28px; padding: 18px 24px; background: #fff;
+      border: 2.5px solid var(--ink); border-radius: 4px 9px 5px 8px;
+      box-shadow: 6px 6px 0 rgba(31,29,26,.12); transform: rotate(-.6deg);
+      font: 15px/1.9 'JetBrains Mono', ui-monospace, monospace; overflow-wrap: anywhere;
+    }
+    .card b { color: var(--terra); font-weight: 400; }
+    .note { margin-top: 18px; font: 600 25px/1.2 'Caveat', cursive; color: var(--terra); }
+
+    /* ---------- o celular ---------- */
+    .stage { margin-top: 44px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .stage .hint { font: 600 26px 'Caveat', cursive; color: var(--terra); }
+    .phone {
+      position: relative; width: min(390px, 100%); aspect-ratio: 390 / 844; min-height: 0; contain: size;
+      background: #111; border-radius: 56px; padding: 12px;
+      box-shadow: 0 0 0 2px #2b2b2b, 0 30px 60px -20px rgba(31,29,26,.45), 0 12px 24px rgba(31,29,26,.18);
+    }
+    .phone::before, .phone::after { content: ""; position: absolute; background: #1b1b1b; border-radius: 3px; }
+    .phone::before { left: -4px; top: 150px; width: 4px; height: 64px; box-shadow: 0 84px 0 #1b1b1b; }
+    .phone::after { right: -4px; top: 200px; width: 4px; height: 96px; }
+    .screen {
+      position: relative; height: 100%; border-radius: 44px; overflow: hidden; background: #fff;
+      display: flex; flex-direction: column; font-family: var(--app-font); color: #111;
+    }
+    .island { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 112px; height: 32px; background: #000; border-radius: 20px; z-index: 5; }
+    .status { height: 50px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 6px 30px 0 34px; font-weight: 600; font-size: 15px; }
+    .status .icons { display: flex; gap: 6px; align-items: center; }
+    .appbar { flex: none; display: flex; align-items: center; justify-content: space-between; padding: 4px 14px 8px; }
+    .logo { font: 700 34px/1 'Caveat', cursive; background: var(--brand); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: 4px; }
+    .appbar .icons { display: flex; gap: 18px; }
+    svg.i { width: 24px; height: 24px; fill: none; stroke: #111; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+
+    .feed { flex: 1; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+    .feed::-webkit-scrollbar { display: none; }
+    .stories { display: flex; gap: 12px; overflow-x: auto; padding: 6px 12px 12px; border-bottom: 1px solid #eee; scrollbar-width: none; }
+    .stories::-webkit-scrollbar { display: none; }
+    .story { flex: none; width: 66px; text-align: center; font-size: 11px; color: #333; }
+    .ring { width: 66px; height: 66px; border-radius: 50%; padding: 2.5px; background: var(--brand); }
+    .ring.me { background: #ddd; position: relative; }
+    .ring.me::after { content: "+"; position: absolute; right: 0; bottom: 0; width: 20px; height: 20px; border-radius: 50%; background: #2A4F9C; color: #fff; border: 2px solid #fff; font: 700 15px/16px var(--app-font); }
+    .ring > * { width: 100%; height: 100%; border-radius: 50%; border: 2.5px solid #fff; object-fit: cover; display: grid; place-items: center; background: #f3efe8; }
+    .story span { display: block; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .post { border-bottom: 1px solid #f2f2f2; padding-bottom: 10px; }
+    .post header { display: flex; align-items: center; gap: 10px; padding: 10px 12px; }
+    .av { width: 34px; height: 34px; border-radius: 50%; padding: 2px; background: var(--brand); flex: none; }
+    .av i { display: grid; place-items: center; width: 100%; height: 100%; border-radius: 50%; border: 2px solid #fff; font: 700 12px var(--app-font); font-style: normal; color: #fff; }
+    .who { flex: 1; line-height: 1.2; }
+    .who b { font-size: 13.5px; }
+    .who small { display: block; font-size: 11.5px; color: #555; }
+    .photo { position: relative; aspect-ratio: 1; background: #f0ebe2; overflow: hidden; }
+    .photo img { width: 100%; height: 100%; object-fit: cover; display: block; user-select: none; -webkit-user-drag: none; }
+    .photo .oops { position: absolute; inset: 0; display: none; place-items: center; text-align: center; padding: 20px; font-size: 13px; color: #7A746A; }
+    .photo.broken .oops { display: grid; }
+    .burst { position: absolute; left: 50%; top: 50%; width: 96px; height: 96px; margin: -48px 0 0 -48px; fill: #fff; stroke: none; opacity: 0; transform: scale(.4); pointer-events: none; filter: drop-shadow(0 4px 12px rgba(0,0,0,.35)); }
+    .burst.go { animation: burst .8s ease-out; }
+    @keyframes burst { 15% { opacity: 1; transform: scale(1.15); } 30% { transform: scale(.95); } 70% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1); } }
+    .actions { display: flex; align-items: center; gap: 14px; padding: 9px 12px 4px; }
+    .actions button { background: none; border: 0; padding: 0; cursor: pointer; display: grid; }
+    .actions .save { margin-left: auto; }
+    .liked svg.i { fill: #E0245E; stroke: #E0245E; animation: pop .35s ease-out; }
+    .saved svg.i { fill: #111; }
+    @keyframes pop { 40% { transform: scale(1.25); } }
+    .meta { padding: 0 12px; font-size: 13.5px; line-height: 1.4; }
+    .meta .likes { font-weight: 600; }
+    .meta .more { color: #777; margin-top: 2px; }
+    .meta .when { color: #999; font-size: 11px; text-transform: uppercase; letter-spacing: .02em; margin-top: 3px; }
+
+    .tabbar { flex: none; height: 74px; display: flex; justify-content: space-around; align-items: flex-start; padding-top: 12px; border-top: 1px solid #eee; background: #fff; }
+    .tabbar .me { width: 26px; height: 26px; border-radius: 50%; background: var(--brand); display: grid; place-items: center; color: #fff; font: 700 10px var(--app-font); }
+
+    .credits { margin-top: 26px; text-align: center; font-size: 13px; color: var(--faint); line-height: 1.5; }
+    .credits a { color: inherit; }
+    footer { margin-top: 18px; text-align: center; font: 600 22px 'Caveat', cursive; color: var(--faint); }
+  </style>
+</head>
+<body>
+<div class="page">
+  <p class="eyebrow">semana da computação · UFJF →</p>
+  <h1>Insta<span>Comp</span></h1>
+  <p class="sub">Um Instagram de mentira, rodando de verdade num container no Cloud Run, num data center do Google.</p>
+
+  <div class="card">
+    serviço:&nbsp;&nbsp;&nbsp;<b>{{SERVICO}}</b><br>
+    revisão:&nbsp;&nbsp;&nbsp;<b>{{REVISAO}}</b><br>
+    instância:&nbsp;<b>{{INSTANCIA}}</b>
+  </div>
+  <p class="note">↑ esse código nasce quando a instância liga. Se aparecer outro, é outra cópia do servidor te atendendo.</p>
+
+  <div class="stage">
+    <p class="hint">↓ role o feed e dê dois cliques numa foto</p>
+    <div class="phone" aria-label="Celular com o app InstaComp aberto">
+      <div class="screen">
+        <div class="island"></div>
+        <div class="status">
+          <span id="clock">9:41</span>
+          <span class="icons" aria-hidden="true">
+            <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+            <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0zM3.4 6.8a6.5 6.5 0 0 1 9.2 0l-1.4 1.4a4.5 4.5 0 0 0-6.4 0zM1 4.4a9.9 9.9 0 0 1 14 0l-1.4 1.4a7.9 7.9 0 0 0-11.2 0z"/></svg>
+            <svg width="26" height="12" viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="#111" opacity=".45"/><rect x="2" y="2" width="16" height="8" rx="1.6"/><rect x="23.5" y="4" width="2" height="4" rx="1" opacity=".45"/></svg>
+          </span>
+        </div>
+        <div class="appbar">
+          <span class="logo">InstaComp</span>
+          <span class="icons" aria-hidden="true">
+            <svg class="i" viewBox="0 0 24 24"><path d="M12 20.5s-7.6-4.6-9.4-9.3C1.4 8 3.5 4.5 7 4.5c2 0 3.6 1.1 5 2.8 1.4-1.7 3-2.8 5-2.8 3.5 0 5.6 3.5 4.4 6.7-1.8 4.7-9.4 9.3-9.4 9.3z"/></svg>
+            <svg class="i" viewBox="0 0 24 24"><path d="M21.5 2.5 10 13.5M21.5 2.5l-7 19-3.8-8.3-8.2-3.7z"/></svg>
+          </span>
+        </div>
+        <div class="feed" id="feed">
+          <div class="stories" id="stories"></div>
+          <div id="posts"></div>
+        </div>
+        <nav class="tabbar" aria-hidden="true">
+          <svg class="i" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z" fill="#111"/></svg>
+          <svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4.5-4.5"/></svg>
+          <svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>
+          <svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M3 8h18M10 3l3 5M16 3l3 5M10 11.5v6l5-3z"/></svg>
+          <span class="me">FR</span>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <p class="credits">Fotos do portal de notícias da UFJF (<a href="https://www2.ufjf.br/noticias/" target="_blank" rel="noopener">www2.ufjf.br/noticias</a>), carregadas direto de lá.<br>Perfis e legendas são fictícios, só para a aula.</p>
+  <footer>F. Rooke · system design na prática</footer>
+</div>
+
+<script>
+  // Fotos carregadas direto do portal de notícias da UFJF.
+  const BASE = 'https://www2.ufjf.br/noticias/wp-content/uploads/sites/2/';
+
+  const STORIES = [
+    ['ana.dev',   '2026/09/whatsapp-image-2026-09-29-at-15-47-33-768x512.jpeg'],
+    ['mari.design','2026/09/mulher-rendeira-1.jpg'],
+    ['duda.lab',  '2026/09/museu-moda-768x576.jpg'],
+    ['joao.cc',   '2026/08/cinema_in_namibe_angola-768x484.jpg'],
+    ['bia.si',    '2026/09/exposio-forum-da-cultura-e1742996947967-768x512.jpg'],
+    ['caio.bits', '2026/09/whatsapp-image-2026-09-15-at-14-23-52-768x403.jpeg'],
+    ['leo.eng',   '2026/09/mapa-americas-768x508.jpg'],
+    ['rafa.ml',   '2026/09/ismael-nery.jpg'],
+  ];
+
+  // [usuário, local, foto, legenda, curtidas, comentários, quando]
+  const POSTS = [
+    ['instacomp', 'Campus UFJF', '2026/10/image-2026-10-02t160143-747-768x427.jpg', 'Começou a Semana da Computação da UFJF! Bora de minicurso de cloud?', 1204, 87, 'há 12 minutos'],
+    ['ana.dev', 'Laboratório de informática', '2026/09/img_e6773-768x576.jpg', 'Lab liberado depois da aula. Quem mais tá brigando com ponteiro em C?', 312, 41, 'há 40 minutos'],
+    ['caio.bits', 'Maratona de programação', '2026/09/d909e932-fa43-4c2b-b8f7-0c6335cded6e-768x576.jpg', 'Sala lotada pra maratona. Time "Segmentation Fault" presente!', 958, 64, 'há 1 hora'],
+    ['bia.si', 'UFJF', '2026/08/img_0079-768x512.jpg', 'Aula com notebook aberto e 47 abas no navegador. Normal.', 487, 33, 'há 2 horas'],
+    ['mari.design', 'Jardim Botânico da UFJF', '2026/10/jabuticabas-3-768x432.jpg', 'Pausa no Jardim Botânico entre uma aula e outra. Jabuticaba no pé!', 1530, 92, 'há 3 horas'],
+    ['leo.eng', 'Campus UFJF', '2026/10/whatsapp-image-2026-10-14-at-15-51-57-768x450.jpeg', 'Fim de tarde no campus, de skate.', 642, 21, 'há 4 horas'],
+    ['duda.lab', 'Iniciação científica', '2026/09/analysis-gbc6408686_1280-768x512.jpg', 'Hoje é dia de microscópio. Os dados não vão se coletar sozinhos.', 276, 18, 'há 5 horas'],
+    ['rafa.ml', 'Biblioteca', '2026/09/biblioteca-e1584646222204.jpg', 'Biblioteca vazia = melhor lugar pra estudar Cálculo II.', 803, 55, 'há 6 horas'],
+    ['mari.design', 'Instituto de Artes e Design', '2026/10/vista-da-exposio-foto-ian-barbosa-768x512.jpg', 'Exposição nova no IAD. Vale muito a visita.', 421, 27, 'há 8 horas'],
+    ['joao.cc', 'Céu do campus', '2026/10/swallow-tailed_kite_34163638494-e1791464151851-768x470.jpg', 'Um gavião-tesoura passou voando bem na hora do intervalo.', 1987, 140, 'há 10 horas'],
+    ['leo.eng', 'Sarau da computação', '2026/09/violao.jpg', 'Ensaiando pro sarau. Aceito pedidos que não sejam Wonderwall.', 359, 46, 'ontem'],
+    ['caio.bits', 'Visita técnica', '2026/09/cpia-de-20250927_144955-3-768x432.jpg', 'Visita técnica no laboratório. Cada máquina!', 518, 22, 'ontem'],
+    ['bia.si', 'Quadra do campus', '2026/09/whatsapp-image-2026-09-01-at-09-32-28-768x576.jpeg', 'Treino na quadra depois da prova. Merecido.', 694, 38, 'há 2 dias'],
+    ['joao.cc', 'UFJF', '2026/08/image-2026-08-26t095349-789-768x511.jpg', 'Primeiro dia de aula no prédio novo. Alguém sabe onde fica a sala 3?', 1121, 103, 'há 3 dias'],
+    ['duda.lab', 'Mostra de extensão', '2026/09/extensao-mostra.jpg', 'Apresentei meu pôster na mostra! Obrigada a todo mundo que passou lá.', 845, 71, 'há 4 dias'],
+  ];
+
+  const COLORS = { 'instacomp': '#C15A33', 'ana.dev': '#2A4F9C', 'caio.bits': '#3E7D5A', 'bia.si': '#8A3FA0', 'mari.design': '#B8325A', 'leo.eng': '#C98A1B', 'duda.lab': '#1F7A8C', 'rafa.ml': '#5E5A52', 'joao.cc': '#A8452B' };
+  const initials = u => ({ instacomp: 'IC' })[u] || u.replace(/[^a-z]/gi, ' ').trim().split(/\s+/).map(s => s[0]).join('').slice(0, 2).toUpperCase();
+  const fmt = n => n.toLocaleString('pt-BR');
+  const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+
+  const ICON = {
+    heart: '<path d="M12 20.5s-7.6-4.6-9.4-9.3C1.4 8 3.5 4.5 7 4.5c2 0 3.6 1.1 5 2.8 1.4-1.7 3-2.8 5-2.8 3.5 0 5.6 3.5 4.4 6.7-1.8 4.7-9.4 9.3-9.4 9.3z"/>',
+    comment: '<path d="M20.6 16.6A9 9 0 1 0 17 20.2l4 1z"/>',
+    share: '<path d="M21.5 2.5 10 13.5M21.5 2.5l-7 19-3.8-8.3-8.2-3.7z"/>',
+    save: '<path d="M18.5 21 12 15.8 5.5 21V4.5A1.5 1.5 0 0 1 7 3h10a1.5 1.5 0 0 1 1.5 1.5z"/>',
+    dots: '<circle cx="5" cy="12" r="1.3" fill="#111"/><circle cx="12" cy="12" r="1.3" fill="#111"/><circle cx="19" cy="12" r="1.3" fill="#111"/>',
+  };
+  const svg = (name, extra = '') => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true" ${extra}>${ICON[name]}</svg>`;
+
+  // stories
+  document.getElementById('stories').innerHTML =
+    `<div class="story"><div class="ring me"><i style="font:700 18px var(--app-font);color:#fff;background:#C15A33;font-style:normal">FR</i></div><span>seu story</span></div>` +
+    STORIES.map(([u, img]) => `<div class="story"><div class="ring"><img src="${BASE + img}" alt="" loading="lazy" referrerpolicy="no-referrer"></div><span>${u}</span></div>`).join('');
+
+  // posts
+  document.getElementById('posts').innerHTML = POSTS.map(([u, place, img, cap, likes, comments, when], i) => `
+    <article class="post" data-i="${i}" data-likes="${likes}">
+      <header>
+        <span class="av"><i style="background:${COLORS[u] || '#555'}">${initials(u)}</i></span>
+        <span class="who"><b>${u}</b><small>${esc(place)}</small></span>
+        ${svg('dots')}
+      </header>
+      <div class="photo">
+        <img src="${BASE + img}" alt="Foto do post de ${u}: ${esc(cap)}" loading="lazy" referrerpolicy="no-referrer"
+             onerror="this.parentNode.classList.add('broken')">
+        <span class="oops">foto indisponível no site da UFJF</span>
+        <svg class="i burst" viewBox="0 0 24 24" aria-hidden="true">${ICON.heart}</svg>
+      </div>
+      <div class="actions">
+        <button class="like" aria-label="Curtir">${svg('heart')}</button>
+        <button aria-label="Comentar">${svg('comment')}</button>
+        <button aria-label="Compartilhar">${svg('share')}</button>
+        <button class="save" aria-label="Salvar">${svg('save')}</button>
+      </div>
+      <div class="meta">
+        <div class="likes">${fmt(likes)} curtidas</div>
+        <div><b>${u}</b> ${esc(cap)}</div>
+        <div class="more">Ver todos os ${comments} comentários</div>
+        <div class="when">${when}</div>
+      </div>
+    </article>`).join('');
+
+  // curtir: clique no coração ou dois cliques na foto
+  function toggleLike(post, forceOn) {
+    const btn = post.querySelector('.like');
+    const on = forceOn ? true : !btn.classList.contains('liked');
+    if (on === btn.classList.contains('liked')) return;
+    btn.classList.toggle('liked', on);
+    const n = Number(post.dataset.likes) + (on ? 1 : 0);
+    post.querySelector('.likes').textContent = `${fmt(n)} curtidas`;
+  }
+  document.getElementById('posts').addEventListener('click', e => {
+    const post = e.target.closest('.post'); if (!post) return;
+    if (e.target.closest('.like')) toggleLike(post);
+    if (e.target.closest('.save')) e.target.closest('.save').classList.toggle('saved');
+  });
+  document.getElementById('posts').addEventListener('dblclick', e => {
+    const photo = e.target.closest('.photo'); if (!photo) return;
+    const post = photo.closest('.post');
+    toggleLike(post, true);
+    const b = photo.querySelector('.burst');
+    b.classList.remove('go'); void b.offsetWidth; b.classList.add('go');
+  });
+
+  // relógio da barra de status
+  const tick = () => { const d = new Date(); document.getElementById('clock').textContent = d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
+  tick(); setInterval(tick, 30000);
+</script>
+</body>
+</html>
